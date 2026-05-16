@@ -17,56 +17,61 @@
 }
 body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f3f4f6; color: #1f2937; }
 
-/* ── Start Screen ─────────────────────────────── */
+/* ══ Start Screen ══════════════════════════════════════════ */
 #start-screen {
   display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 2rem;
+  min-height: 100vh; padding: 1.5rem;
 }
 .start-card {
-  background: white; border-radius: 14px; padding: 2.5rem;
+  background: white; border-radius: 14px; padding: 2rem;
   max-width: 480px; width: 100%;
   box-shadow: 0 4px 32px rgba(0,0,0,0.10);
 }
 .start-logo { text-align: center; margin-bottom: 1.5rem; }
 .start-logo .icon { font-size: 2.5rem; }
-.start-logo h1 { font-size: 1.25rem; color: var(--green); margin-top: 0.5rem; line-height: 1.5; }
+.start-logo h1 { font-size: 1.2rem; color: var(--green); margin-top: 0.5rem; line-height: 1.5; }
 .start-logo p { font-size: 0.85rem; color: var(--gray); margin-top: 0.25rem; }
 .info-box {
   background: var(--green-light); border-radius: 8px; padding: 1rem 1.25rem;
-  margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 2;
+  margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 2.1;
 }
 .info-box b { color: var(--green); }
 .field-label { font-size: 0.8rem; font-weight: bold; color: #374151; margin-bottom: 0.4rem; display: block; }
 #name-input {
-  width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+  width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border);
   border-radius: 8px; font-size: 1rem; font-family: inherit; margin-bottom: 1rem;
 }
 #name-input:focus { outline: none; border-color: var(--green); }
 .btn-start {
   width: 100%; padding: 0.9rem; background: var(--green); color: white;
   border: none; border-radius: 8px; font-size: 1rem; font-family: inherit;
-  font-weight: bold; cursor: pointer; letter-spacing: 0.02em;
+  font-weight: bold; cursor: pointer;
 }
 .btn-start:hover { background: var(--green-dark); }
 .btn-start:disabled { background: #9ca3af; cursor: not-allowed; }
 
-/* ── Exam Screen ──────────────────────────────── */
-#exam-screen { display: none; height: 100vh; flex-direction: column; }
+/* ══ Exam Screen ═══════════════════════════════════════════ */
+#exam-screen { display: none; height: 100dvh; flex-direction: column; }
 
+/* ── Header ── */
 .exam-header {
   background: var(--green); color: white;
-  padding: 0.6rem 1.25rem;
+  padding: 0.55rem 1rem;
   display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0; gap: 1rem;
+  flex-shrink: 0; gap: 0.75rem; min-height: 48px;
 }
-.exam-header h1 { font-size: 0.9rem; white-space: nowrap; }
+.exam-header h1 { font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; }
 
-.q-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; }
+/* nav dots — desktop only */
+.q-nav {
+  display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center;
+  overflow-x: auto; max-width: 600px;
+}
 .q-dot {
-  width: 26px; height: 26px; border-radius: 50%;
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
   border: 2px solid rgba(255,255,255,0.4);
   background: transparent; cursor: pointer;
-  font-size: 0.65rem; color: white;
+  font-size: 0.68rem; color: white;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
 }
@@ -75,17 +80,54 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
 .q-dot.answered { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.8); }
 .q-dot.current.answered { background: white; color: var(--green); }
 
-.header-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-.save-indicator { font-size: 0.75rem; opacity: 0.75; }
+.header-right { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+.save-indicator { font-size: 0.72rem; opacity: 0.8; }
 .timer {
-  font-size: 1.2rem; font-weight: bold; font-family: monospace;
-  background: rgba(0,0,0,0.18); padding: 0.3rem 0.7rem; border-radius: 6px;
-  min-width: 72px; text-align: center;
+  font-size: 1.15rem; font-weight: bold; font-family: monospace;
+  background: rgba(0,0,0,0.2); padding: 0.28rem 0.65rem; border-radius: 6px;
+  min-width: 68px; text-align: center;
 }
-.timer.warn { background: var(--amber); }
+.timer.warn   { background: var(--amber); }
 .timer.danger { background: var(--red); animation: pulse 1s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
 
+/* ── Mobile tab bar ── */
+.mobile-tabs {
+  display: none;
+  background: #1f2937; flex-shrink: 0;
+}
+.mobile-tab {
+  flex: 1; padding: 0.7rem 0.5rem; border: none;
+  background: transparent; color: #9ca3af;
+  font-size: 0.875rem; font-family: inherit; font-weight: bold;
+  cursor: pointer; border-bottom: 3px solid transparent;
+  display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+}
+.mobile-tab.active { color: white; border-bottom-color: #4ade80; }
+
+/* ── Mobile progress strip ── */
+.mobile-progress {
+  display: none;
+  background: #111827; color: #9ca3af;
+  padding: 0.4rem 1rem; font-size: 0.78rem;
+  display: none; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.mobile-dots {
+  display: flex; gap: 0.25rem; overflow-x: auto;
+}
+.mobile-dot {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: transparent; cursor: pointer;
+  font-size: 0.6rem; color: white;
+  display: flex; align-items: center; justify-content: center;
+}
+.mobile-dot.current  { background: #4ade80; color: #111; border-color: #4ade80; font-weight: bold; }
+.mobile-dot.answered { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.7); }
+.mobile-dot.current.answered { background: #4ade80; color: #111; }
+
+/* ── Exam body ── */
 .exam-body { display: flex; flex: 1; overflow: hidden; }
 
 /* Left: viewer */
@@ -94,27 +136,40 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
   background: #111827; border-right: 2px solid #374151;
 }
 .viewer-bar {
-  background: #1f2937; padding: 0.5rem 1rem;
+  background: #1f2937; padding: 0.45rem 1rem;
   display: flex; justify-content: space-between; align-items: center;
   flex-shrink: 0;
 }
-.viewer-bar span { font-size: 0.8rem; color: #9ca3af; }
+.viewer-bar span { font-size: 0.78rem; color: #9ca3af; }
 .viewer-bar .badge {
   background: rgba(255,255,255,0.1); border-radius: 4px;
-  padding: 0.2rem 0.6rem; font-size: 0.75rem; color: #d1fae5;
+  padding: 0.18rem 0.55rem; font-size: 0.73rem; color: #d1fae5;
 }
 .viewer-area {
-  flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 1rem;
+  flex: 1; overflow: auto;
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+  position: relative;
 }
 .viewer-area img {
   max-width: 100%; max-height: 100%; object-fit: contain;
   border-radius: 4px; cursor: zoom-in;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 .viewer-area iframe { width: 100%; height: 100%; border: none; border-radius: 4px; }
-.pdf-fallback { text-align: center; color: #9ca3af; padding: 2rem; }
-.pdf-fallback a { color: #6ee7b7; font-size: 1rem; text-decoration: none; display: inline-block; margin-top: 0.75rem; padding: 0.5rem 1.25rem; border: 1px solid #6ee7b7; border-radius: 6px; }
-.pdf-fallback a:hover { background: rgba(110,231,183,0.1); }
+
+/* PDF fallback */
+.pdf-fallback {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 1rem; color: #9ca3af; padding: 2rem; text-align: center;
+}
+.pdf-open-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--green); color: white;
+  border: none; border-radius: 8px; padding: 0.8rem 1.5rem;
+  font-size: 1rem; font-family: inherit; font-weight: bold; cursor: pointer;
+  text-decoration: none;
+}
+.pdf-open-btn:hover { background: var(--green-dark); }
 
 /* Right: answer form */
 .answer-panel {
@@ -123,63 +178,64 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
 }
 .answer-panel-header {
   background: var(--green-light); border-bottom: 1px solid var(--border);
-  padding: 0.75rem 1.25rem; flex-shrink: 0;
+  padding: 0.65rem 1.25rem; flex-shrink: 0;
 }
-.answer-panel-header h2 { font-size: 0.9rem; color: var(--green); }
+.answer-panel-header h2 { font-size: 0.88rem; color: var(--green); }
 .answer-form { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.875rem; }
 
 .fg label { display: block; font-size: 0.75rem; font-weight: bold; color: #374151; margin-bottom: 0.35rem; }
 .fg textarea {
-  width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border);
-  border-radius: 6px; font-size: 0.83rem; font-family: inherit; resize: vertical; min-height: 64px;
-  line-height: 1.5;
+  width: 100%; padding: 0.65rem 0.75rem; border: 1.5px solid var(--border);
+  border-radius: 6px; font-size: 0.85rem; font-family: inherit; resize: vertical; min-height: 70px;
+  line-height: 1.55;
 }
 .fg textarea:focus { outline: none; border-color: var(--green); }
 .fg select {
-  width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border);
-  border-radius: 6px; font-size: 0.83rem; font-family: inherit; background: white;
+  width: 100%; padding: 0.65rem 0.75rem; border: 1.5px solid var(--border);
+  border-radius: 6px; font-size: 0.85rem; font-family: inherit; background: white;
 }
 .fg select:focus { outline: none; border-color: var(--green); }
 
 .chip-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .chip {
-  padding: 0.3rem 0.75rem; border-radius: 20px;
+  padding: 0.4rem 0.85rem; border-radius: 20px;
   background: #f3f4f6; border: 1.5px solid var(--border);
-  font-size: 0.78rem; color: #374151; cursor: pointer; user-select: none;
+  font-size: 0.82rem; color: #374151; cursor: pointer; user-select: none;
   transition: all 0.15s;
 }
-.chip:hover { border-color: var(--green); }
 .chip.on { background: var(--green); color: white; border-color: var(--green); }
 
-/* Footer */
+/* ── Footer ── */
 .exam-footer {
   background: white; border-top: 1px solid var(--border);
-  padding: 0.65rem 1.25rem;
+  padding: 0.6rem 1rem;
   display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0;
+  flex-shrink: 0; gap: 0.5rem;
 }
-.progress-info { font-size: 0.82rem; color: var(--gray); }
+.progress-info { font-size: 0.8rem; color: var(--gray); white-space: nowrap; }
 .footer-btns { display: flex; gap: 0.5rem; }
-.btn { padding: 0.55rem 1.1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-family: inherit; font-weight: bold; }
+.btn {
+  padding: 0.6rem 1.1rem; border-radius: 6px; border: none;
+  cursor: pointer; font-size: 0.85rem; font-family: inherit; font-weight: bold;
+  white-space: nowrap;
+}
 .btn-ghost { background: #f3f4f6; color: #374151; }
 .btn-ghost:hover { background: #e5e7eb; }
-.btn-primary { background: var(--green); color: white; }
-.btn-primary:hover { background: var(--green-dark); }
 .btn-danger { background: var(--red); color: white; }
 .btn-danger:hover { background: #b91c1c; }
 
-/* ── Submit Screen ────────────────────────────── */
+/* ══ Submit Screen ══════════════════════════════════════════ */
 #submit-screen {
   display: none; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 2rem;
+  min-height: 100vh; padding: 1.5rem;
 }
 .submit-card {
-  background: white; border-radius: 14px; padding: 2.5rem;
+  background: white; border-radius: 14px; padding: 2rem;
   max-width: 500px; width: 100%;
   box-shadow: 0 4px 32px rgba(0,0,0,0.10); text-align: center;
 }
 .submit-card .big-icon { font-size: 3rem; margin-bottom: 1rem; }
-.submit-card h2 { color: var(--green); font-size: 1.3rem; margin-bottom: 0.5rem; }
+.submit-card h2 { color: var(--green); font-size: 1.25rem; margin-bottom: 0.5rem; }
 .submit-card .sub { color: var(--gray); font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6; }
 .summary-box {
   background: var(--green-light); border-radius: 8px; padding: 1rem 1.25rem;
@@ -199,23 +255,66 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
   border: none; border-radius: 8px; font-size: 0.875rem; font-family: inherit; cursor: pointer;
 }
 .btn-back:hover { background: #e5e7eb; }
+
+/* ══ Mobile overrides (≤ 767px) ════════════════════════════ */
+@media (max-width: 767px) {
+  /* Header: hide title & nav dots */
+  .exam-header h1 { display: none; }
+  .q-nav { display: none; }
+  .save-indicator { display: none; }
+  .exam-header { justify-content: space-between; padding: 0.5rem 0.75rem; }
+
+  /* Show mobile tabs & progress strip */
+  .mobile-tabs { display: flex; }
+  .mobile-progress { display: flex; }
+
+  /* Body: full-width single-panel */
+  .exam-body { display: block; overflow: hidden; position: relative; }
+  .viewer-panel {
+    flex: none; width: 100%;
+    height: calc(100dvh - 48px - 42px - 36px - 56px);
+    border-right: none;
+  }
+  .answer-panel {
+    flex: none; width: 100%;
+    height: calc(100dvh - 48px - 42px - 36px - 56px);
+    position: absolute; top: 0; left: 0;
+  }
+  .viewer-panel.tab-hidden { display: none; }
+  .answer-panel.tab-hidden { display: none; }
+
+  /* Footer: three equal buttons */
+  .exam-footer { padding: 0.5rem 0.75rem; gap: 0.4rem; }
+  .footer-btns { flex: 1; }
+  .footer-btns:last-child { justify-content: flex-end; }
+  .btn { padding: 0.65rem 0.75rem; font-size: 0.82rem; }
+  .progress-info { font-size: 0.75rem; }
+
+  /* Answer form: slightly larger tap targets */
+  .chip { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+  .fg textarea { font-size: 0.9rem; min-height: 80px; }
+  .fg select { font-size: 0.9rem; padding: 0.75rem; }
+
+  /* Start card padding */
+  .start-card { padding: 1.5rem; }
+}
 </style>
 </head>
 <body>
 
-<!-- ══ Start Screen ══════════════════════════════════════ -->
+<!-- ══ Start Screen ══════════════════════════════════════════ -->
 <div id="start-screen">
   <div class="start-card">
     <div class="start-logo">
       <div class="icon">🌲</div>
       <h1>숲가꾸기 사업<br>품질·안전 오류탐지 경진대회</h1>
-      <p id="subtitle-org">산림청</p>
+      <p>산림청</p>
     </div>
     <div class="info-box">
       <div>📷 사진 문제: <b id="cnt-photo">-</b>장</div>
       <div>📄 문서 문제: <b id="cnt-doc">-</b>세트</div>
       <div>⏱ 제한시간: <b id="cnt-min">-</b>분</div>
-      <div>💾 답안은 자동 저장 → 제출 시 CSV 다운로드</div>
+      <div>💾 답안 자동저장 → 제출 시 CSV 다운로드</div>
     </div>
     <label class="field-label" for="name-input">이름</label>
     <input type="text" id="name-input" placeholder="이름을 입력하세요" maxlength="20" autocomplete="off">
@@ -223,9 +322,10 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
   </div>
 </div>
 
-<!-- ══ Exam Screen ══════════════════════════════════════ -->
+<!-- ══ Exam Screen ════════════════════════════════════════════ -->
 <div id="exam-screen">
 
+  <!-- Header -->
   <div class="exam-header">
     <h1>숲가꾸기 오류탐지</h1>
     <div class="q-nav" id="q-nav"></div>
@@ -235,10 +335,27 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
     </div>
   </div>
 
+  <!-- Mobile: tab bar -->
+  <div class="mobile-tabs" id="mobile-tabs">
+    <button class="mobile-tab active" id="tab-viewer" onclick="switchTab('viewer')">
+      📷 문제 보기
+    </button>
+    <button class="mobile-tab" id="tab-answer" onclick="switchTab('answer')">
+      ✏️ 답안 작성
+    </button>
+  </div>
+
+  <!-- Mobile: progress strip with mini dots -->
+  <div class="mobile-progress" id="mobile-progress">
+    <div class="mobile-dots" id="mobile-dots"></div>
+    <span id="mobile-progress-text" style="flex-shrink:0;margin-left:0.5rem;font-size:0.75rem;">1/6</span>
+  </div>
+
+  <!-- Body -->
   <div class="exam-body">
 
-    <!-- Left: viewer -->
-    <div class="viewer-panel">
+    <!-- Viewer panel -->
+    <div class="viewer-panel" id="viewer-panel">
       <div class="viewer-bar">
         <span id="viewer-label">문제 1</span>
         <span class="badge" id="viewer-badge">📷 사진</span>
@@ -246,8 +363,8 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
       <div class="viewer-area" id="viewer-area"></div>
     </div>
 
-    <!-- Right: answer form -->
-    <div class="answer-panel">
+    <!-- Answer panel -->
+    <div class="answer-panel" id="answer-panel">
       <div class="answer-panel-header">
         <h2 id="form-title">답안 작성</h2>
       </div>
@@ -255,7 +372,7 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
 
         <div class="fg">
           <label>문제 영역 (해당 항목 모두 선택)</label>
-          <div class="chip-group" id="chip-group">
+          <div class="chip-group">
             <div class="chip" data-key="safety"   onclick="toggleChip(this)">안전</div>
             <div class="chip" data-key="quality"  onclick="toggleChip(this)">품질</div>
             <div class="chip" data-key="document" onclick="toggleChip(this)">문서·기록</div>
@@ -303,20 +420,21 @@ body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; backgrou
 
   </div><!-- exam-body -->
 
+  <!-- Footer -->
   <div class="exam-footer">
     <div class="footer-btns">
       <button class="btn btn-ghost" onclick="prevQ()">← 이전</button>
     </div>
-    <div class="progress-info" id="progress-info">1 / 20문제</div>
+    <div class="progress-info" id="progress-info">1 / 6문제</div>
     <div class="footer-btns">
       <button class="btn btn-ghost" onclick="nextQ()">다음 →</button>
-      <button class="btn btn-danger" onclick="confirmSubmit()">최종 제출</button>
+      <button class="btn btn-danger" onclick="confirmSubmit()">제출</button>
     </div>
   </div>
 
 </div><!-- exam-screen -->
 
-<!-- ══ Submit Screen ══════════════════════════════════════ -->
+<!-- ══ Submit Screen ════════════════════════════════════════ -->
 <div id="submit-screen">
   <div class="submit-card">
     <div class="big-icon">✅</div>
@@ -342,49 +460,45 @@ let answers = {};
 let timerID = null;
 let secsLeft = 0;
 let startedAt = null;
-let submitted = false;
 let userName = '';
+let currentTab = 'viewer';
 
 const SAVE_KEY = 'fmexam_v1';
 const CAT_KEYS = ['safety', 'quality', 'document', 'env', 'contract'];
+
+const isMobile = () => window.innerWidth <= 767;
 
 // ─── Init ─────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     const r = await fetch('manifest.json');
-    if (!r.ok) throw new Error('not found');
+    if (!r.ok) throw new Error();
     manifest = await r.json();
-  } catch (e) {
-    alert('manifest.json을 불러올 수 없습니다.\nGitHub Pages 또는 로컬 서버(python -m http.server)를 통해 실행하세요.');
+  } catch {
+    alert('manifest.json을 불러올 수 없습니다.\nGitHub Pages 또는 로컬 서버(python -m http.server)로 실행하세요.');
     return;
   }
 
-  const photos = manifest.questions.filter(q => q.type === 'photo').length;
-  const docs   = manifest.questions.filter(q => q.type === 'doc').length;
-  document.getElementById('cnt-photo').textContent = photos;
-  document.getElementById('cnt-doc').textContent = docs;
-  document.getElementById('cnt-min').textContent = manifest.duration_minutes;
+  document.getElementById('cnt-photo').textContent = manifest.questions.filter(q => q.type === 'photo').length;
+  document.getElementById('cnt-doc').textContent   = manifest.questions.filter(q => q.type === 'doc').length;
+  document.getElementById('cnt-min').textContent   = manifest.duration_minutes;
 
   const ni = document.getElementById('name-input');
   ni.addEventListener('input', () => {
     document.getElementById('start-btn').disabled = ni.value.trim().length < 2;
   });
 
-  // restore draft
-  try { const s = localStorage.getItem(SAVE_KEY); if (s) answers = JSON.parse(s); } catch(e) {}
+  try { const s = localStorage.getItem(SAVE_KEY); if (s) answers = JSON.parse(s); } catch {}
 });
 
 // ─── Start ────────────────────────────────────────────────
 function startExam() {
   userName = document.getElementById('name-input').value.trim();
   if (!userName) return;
-
-  secsLeft = manifest.duration_minutes * 60;
+  secsLeft  = manifest.duration_minutes * 60;
   startedAt = Date.now();
-
   show('exam-screen', 'flex');
   hide('start-screen');
-
   buildNav();
   gotoQ(0);
   startTimer();
@@ -392,26 +506,41 @@ function startExam() {
 
 // ─── Navigation ───────────────────────────────────────────
 function buildNav() {
+  // Desktop dots
   const nav = document.getElementById('q-nav');
   nav.innerHTML = '';
+  // Mobile dots
+  const mnav = document.getElementById('mobile-dots');
+  mnav.innerHTML = '';
+
   manifest.questions.forEach((q, i) => {
+    // desktop
     const d = document.createElement('button');
-    d.className = 'q-dot';
-    d.id = `dot-${i}`;
-    d.textContent = i + 1;
-    d.title = q.label;
+    d.className = 'q-dot'; d.id = `dot-${i}`;
+    d.textContent = i + 1; d.title = q.label;
     d.onclick = () => gotoQ(i);
     nav.appendChild(d);
+    // mobile
+    const md = document.createElement('button');
+    md.className = 'mobile-dot'; md.id = `mdot-${i}`;
+    md.textContent = i + 1; md.title = q.label;
+    md.onclick = () => gotoQ(i);
+    mnav.appendChild(md);
   });
   refreshDots();
 }
 
 function refreshDots() {
   manifest.questions.forEach((_, i) => {
-    const d = document.getElementById(`dot-${i}`);
-    if (!d) return;
-    d.className = 'q-dot' + (i === curIdx ? ' current' : '') + (hasAnswer(i) ? ' answered' : '');
+    const cls = (i === curIdx ? ' current' : '') + (hasAnswer(i) ? ' answered' : '');
+    const d  = document.getElementById(`dot-${i}`);
+    const md = document.getElementById(`mdot-${i}`);
+    if (d)  d.className  = 'q-dot'    + cls;
+    if (md) md.className = 'mobile-dot' + cls;
   });
+  // scroll active mobile dot into view
+  const activeDot = document.getElementById(`mdot-${curIdx}`);
+  if (activeDot) activeDot.scrollIntoView({ inline: 'center', behavior: 'smooth' });
 }
 
 function hasAnswer(i) {
@@ -423,52 +552,92 @@ function gotoQ(i) {
   saveAnswer();
   curIdx = i;
   renderQ(i);
+  // mobile: go to viewer tab when navigating to new question
+  if (isMobile()) switchTab('viewer');
 }
 function prevQ() { if (curIdx > 0) gotoQ(curIdx - 1); }
 function nextQ() { if (curIdx < manifest.questions.length - 1) gotoQ(curIdx + 1); }
 
+// ─── Mobile tabs ──────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  const vp = document.getElementById('viewer-panel');
+  const ap = document.getElementById('answer-panel');
+  const tv = document.getElementById('tab-viewer');
+  const ta = document.getElementById('tab-answer');
+
+  if (tab === 'viewer') {
+    vp.classList.remove('tab-hidden');
+    ap.classList.add('tab-hidden');
+    tv.classList.add('active');
+    ta.classList.remove('active');
+  } else {
+    ap.classList.remove('tab-hidden');
+    vp.classList.add('tab-hidden');
+    ta.classList.add('active');
+    tv.classList.remove('active');
+    // scroll answer form to top
+    ap.scrollTop = 0;
+  }
+}
+
 // ─── Render question ──────────────────────────────────────
 function renderQ(i) {
-  const q = manifest.questions[i];
+  const q     = manifest.questions[i];
   const total = manifest.questions.length;
+  const mobile = isMobile();
 
-  document.getElementById('viewer-label').textContent = `${q.label}  (${i+1}/${total})`;
-  document.getElementById('viewer-badge').textContent = q.type === 'photo' ? '📷 사진' : '📄 문서';
-  document.getElementById('form-title').textContent = `${q.label} — 답안`;
+  document.getElementById('viewer-label').textContent  = `${q.label}  (${i+1}/${total})`;
+  document.getElementById('viewer-badge').textContent  = q.type === 'photo' ? '📷 사진' : '📄 문서';
+  document.getElementById('form-title').textContent    = `${q.label} — 답안`;
   document.getElementById('progress-info').textContent = `${i+1} / ${total}문제`;
+  document.getElementById('mobile-progress-text').textContent = `${i+1}/${total}`;
 
-  // viewer
+  // Update mobile tab label
+  const tabLabel = q.type === 'photo' ? '📷 문제 보기' : '📄 문서 보기';
+  document.getElementById('tab-viewer').textContent = tabLabel;
+
+  // Render viewer content
   const area = document.getElementById('viewer-area');
   area.innerHTML = '';
+  area.style.position = 'relative';
+
   if (q.type === 'photo') {
     const img = document.createElement('img');
-    img.src = q.file;
-    img.alt = q.label;
+    img.src   = q.file;
+    img.alt   = q.label;
     img.title = '클릭하면 새 탭에서 확대됩니다';
     img.onclick = () => window.open(q.file, '_blank');
     area.appendChild(img);
   } else {
-    // iframe for PDF (works in Chrome/Edge/Firefox on desktop)
-    const frame = document.createElement('iframe');
-    frame.src = q.file;
-    frame.onload = () => {};
-    frame.onerror = () => showPdfFallback(area, q.file);
-    area.appendChild(frame);
-
-    // fallback link shown below iframe
-    const fb = document.createElement('div');
-    fb.className = 'pdf-fallback';
-    fb.style.cssText = 'position:absolute;bottom:1rem;right:1rem;';
-    fb.innerHTML = `<a href="${q.file}" target="_blank">↗ 새 탭에서 열기</a>`;
-    area.style.position = 'relative';
-    area.appendChild(fb);
+    if (mobile) {
+      // Mobile: show open button (browsers don't display PDF inline)
+      area.innerHTML = `
+        <div class="pdf-fallback">
+          <div style="font-size:3rem;">📄</div>
+          <div style="font-size:0.9rem;line-height:1.6;">${q.label}</div>
+          <a class="pdf-open-btn" href="${q.file}" target="_blank">문서 열기 →</a>
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:0.5rem;">
+            문서를 확인한 후 <b style="color:#d1fae5;">✏️ 답안 작성</b> 탭으로 이동하세요.
+          </div>
+        </div>`;
+    } else {
+      // Desktop: iframe with fallback link
+      const frame = document.createElement('iframe');
+      frame.src = q.file;
+      area.appendChild(frame);
+      const fb = document.createElement('a');
+      fb.href = q.file; fb.target = '_blank'; fb.textContent = '↗ 새 탭에서 열기';
+      fb.style.cssText = 'position:absolute;bottom:0.75rem;right:0.75rem;color:#6ee7b7;font-size:0.8rem;background:rgba(0,0,0,0.5);padding:0.3rem 0.7rem;border-radius:4px;text-decoration:none;';
+      area.appendChild(fb);
+    }
   }
 
-  // restore form
+  // Restore saved answer
   const a = answers[i] || {};
   CAT_KEYS.forEach(k => {
     const chip = document.querySelector(`.chip[data-key="${k}"]`);
-    if (chip) chip.className = 'chip' + (a.cats && a.cats.includes(k) ? ' on' : '');
+    if (chip) chip.className = 'chip' + (a.cats?.includes(k) ? ' on' : '');
   });
   document.getElementById('f-problem').value = a.problem || '';
   document.getElementById('f-basis').value   = a.basis   || '';
@@ -479,43 +648,28 @@ function renderQ(i) {
   refreshDots();
 }
 
-function showPdfFallback(area, file) {
-  area.innerHTML = `
-    <div class="pdf-fallback">
-      <div style="font-size:2rem;margin-bottom:0.75rem;">📄</div>
-      <div>PDF를 인라인으로 표시할 수 없습니다.</div>
-      <a href="${file}" target="_blank">새 탭에서 열기 →</a>
-    </div>`;
-}
-
 // ─── Chips ────────────────────────────────────────────────
-function toggleChip(el) {
-  el.classList.toggle('on');
-  autoSave();
-}
+function toggleChip(el) { el.classList.toggle('on'); autoSave(); }
 
 // ─── Save ─────────────────────────────────────────────────
 function currentFormData() {
   return {
-    cats: CAT_KEYS.filter(k => document.querySelector(`.chip[data-key="${k}"]`)?.classList.contains('on')),
+    cats:    CAT_KEYS.filter(k => document.querySelector(`.chip[data-key="${k}"]`)?.classList.contains('on')),
     problem: document.getElementById('f-problem').value,
     basis:   document.getElementById('f-basis').value,
     impact:  document.getElementById('f-impact').value,
     action:  document.getElementById('f-action').value,
     docs:    document.getElementById('f-docs').value,
-    ts: new Date().toISOString(),
+    ts:      new Date().toISOString(),
   };
 }
-
 function saveAnswer() {
   answers[curIdx] = currentFormData();
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(answers)); } catch(e) {}
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(answers)); } catch {}
 }
-
 function autoSave() {
   saveAnswer();
-  const el = document.getElementById('save-indicator');
-  el.textContent = '저장됨 ✓';
+  document.getElementById('save-indicator').textContent = '저장됨 ✓';
 }
 
 // ─── Timer ────────────────────────────────────────────────
@@ -524,13 +678,12 @@ function startTimer() {
   timerID = setInterval(() => {
     secsLeft--;
     updateTimerDisplay();
-    if (secsLeft <= 0) { clearInterval(timerID); alert('시간이 종료되었습니다. 자동 제출됩니다.'); doSubmit(); }
+    if (secsLeft <= 0) { clearInterval(timerID); alert('시간이 종료됐습니다. 자동 제출됩니다.'); doSubmit(); }
   }, 1000);
 }
-
 function updateTimerDisplay() {
-  const m = Math.floor(secsLeft / 60);
-  const s = secsLeft % 60;
+  const m  = Math.floor(secsLeft / 60);
+  const s  = secsLeft % 60;
   const el = document.getElementById('timer');
   el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   el.className = 'timer' + (secsLeft <= 300 ? ' danger' : secsLeft <= 600 ? ' warn' : '');
@@ -539,73 +692,48 @@ function updateTimerDisplay() {
 // ─── Submit ───────────────────────────────────────────────
 function confirmSubmit() {
   saveAnswer();
-  const done = manifest.questions.filter((_, i) => hasAnswer(i)).length;
+  const done  = manifest.questions.filter((_, i) => hasAnswer(i)).length;
   const total = manifest.questions.length;
   if (!confirm(`${total}문제 중 ${done}문제를 작성했습니다.\n최종 제출하시겠습니까?`)) return;
   doSubmit();
 }
-
 function doSubmit() {
-  submitted = true;
   clearInterval(timerID);
-  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
-
+  try { localStorage.removeItem(SAVE_KEY); } catch {}
   const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-  const em = Math.floor(elapsed / 60);
-  const es = elapsed % 60;
-  const done = manifest.questions.filter((_, i) => hasAnswer(i)).length;
-
+  const done    = manifest.questions.filter((_, i) => hasAnswer(i)).length;
   hide('exam-screen');
   show('submit-screen', 'flex');
-  document.getElementById('s-name').textContent = userName;
+  document.getElementById('s-name').textContent     = userName;
   document.getElementById('s-answered').textContent = `${done} / ${manifest.questions.length}문제`;
-  document.getElementById('s-time').textContent = `${em}분 ${es}초`;
+  document.getElementById('s-time').textContent     = `${Math.floor(elapsed/60)}분 ${elapsed%60}초`;
 }
-
-function goBackToExam() {
-  hide('submit-screen');
-  show('exam-screen', 'flex');
-}
+function goBackToExam() { hide('submit-screen'); show('exam-screen', 'flex'); }
 
 // ─── CSV export ───────────────────────────────────────────
 function downloadCSV() {
   const catLabel = { safety:'안전', quality:'품질', document:'문서·기록', env:'환경', contract:'계약·감독' };
-  const header = ['응시자','문제번호','문제명','유형','문제영역','발견한 문제점','근거 및 이유','품질·안전 영향','조치 판단','추가자료 요구','저장 시각'];
-  const rows = [header];
-
+  const rows = [['응시자','문제번호','문제명','유형','문제영역','발견한 문제점','근거 및 이유','품질·안전 영향','조치 판단','추가자료 요구','저장 시각']];
   manifest.questions.forEach((q, i) => {
     const a = answers[i] || {};
-    const cats = (a.cats || []).map(k => catLabel[k] || k).join('/');
     rows.push([
-      userName,
-      `Q${String(i+1).padStart(2,'0')}`,
-      q.label,
+      userName, `Q${String(i+1).padStart(2,'0')}`, q.label,
       q.type === 'photo' ? '사진' : '문서',
-      cats,
-      a.problem || '',
-      a.basis   || '',
-      a.impact  || '',
-      a.action  || '',
-      a.docs    || '',
-      a.ts      || '',
+      (a.cats||[]).map(k => catLabel[k]||k).join('/'),
+      a.problem||'', a.basis||'', a.impact||'', a.action||'', a.docs||'', a.ts||'',
     ]);
   });
-
-  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `답안_${userName}_${new Date().toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: `답안_${userName}_${new Date().toISOString().slice(0,10)}.csv` });
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
 // ─── Helpers ──────────────────────────────────────────────
-function show(id, display='block') { document.getElementById(id).style.display = display; }
-function hide(id) { document.getElementById(id).style.display = 'none'; }
+function show(id, d='block') { document.getElementById(id).style.display = d; }
+function hide(id)             { document.getElementById(id).style.display = 'none'; }
 </script>
 </body>
 </html>
