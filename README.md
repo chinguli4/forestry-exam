@@ -6,9 +6,7 @@
 
 ## 🖥️ 시험 응시
 
-👉 **[시험 시작하기](https://YOUR-USERNAME.github.io/YOUR-REPO/)**
-
-> GitHub Pages 주소로 변경하세요. `Settings → Pages → Source: main / (root)`
+👉 **[시험 시작하기](https://chinguli4.github.io/forestry-exam/)**
 
 - 제한시간: **90분** (manifest.json에서 변경 가능)
 - 문제 구성: **사진 10장 + 문서 10세트**
