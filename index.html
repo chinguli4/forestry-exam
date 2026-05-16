@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>숲가꾸기 사업 오류탐지 경진대회</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #2d6a2d;
+  --green-dark: #1e4d1e;
+  --green-light: #e8f5e8;
+  --amber: #d97706;
+  --red: #dc2626;
+  --gray: #6b7280;
+  --border: #e5e7eb;
+}
+body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #f3f4f6; color: #1f2937; }
+
+/* ── Start Screen ─────────────────────────────── */
+#start-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem;
+}
+.start-card {
+  background: white; border-radius: 14px; padding: 2.5rem;
+  max-width: 480px; width: 100%;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+}
+.start-logo { text-align: center; margin-bottom: 1.5rem; }
+.start-logo .icon { font-size: 2.5rem; }
+.start-logo h1 { font-size: 1.25rem; color: var(--green); margin-top: 0.5rem; line-height: 1.5; }
+.start-logo p { font-size: 0.85rem; color: var(--gray); margin-top: 0.25rem; }
+.info-box {
+  background: var(--green-light); border-radius: 8px; padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 2;
+}
+.info-box b { color: var(--green); }
+.field-label { font-size: 0.8rem; font-weight: bold; color: #374151; margin-bottom: 0.4rem; display: block; }
+#name-input {
+  width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 1rem; font-family: inherit; margin-bottom: 1rem;
+}
+#name-input:focus { outline: none; border-color: var(--green); }
+.btn-start {
+  width: 100%; padding: 0.9rem; background: var(--green); color: white;
+  border: none; border-radius: 8px; font-size: 1rem; font-family: inherit;
+  font-weight: bold; cursor: pointer; letter-spacing: 0.02em;
+}
+.btn-start:hover { background: var(--green-dark); }
+.btn-start:disabled { background: #9ca3af; cursor: not-allowed; }
+
+/* ── Exam Screen ──────────────────────────────── */
+#exam-screen { display: none; height: 100vh; flex-direction: column; }
+
+.exam-header {
+  background: var(--green); color: white;
+  padding: 0.6rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; gap: 1rem;
+}
+.exam-header h1 { font-size: 0.9rem; white-space: nowrap; }
+
+.q-nav { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; }
+.q-dot {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.4);
+  background: transparent; cursor: pointer;
+  font-size: 0.65rem; color: white;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.q-dot:hover { border-color: white; }
+.q-dot.current { background: white; color: var(--green); font-weight: bold; border-color: white; }
+.q-dot.answered { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.8); }
+.q-dot.current.answered { background: white; color: var(--green); }
+
+.header-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.save-indicator { font-size: 0.75rem; opacity: 0.75; }
+.timer {
+  font-size: 1.2rem; font-weight: bold; font-family: monospace;
+  background: rgba(0,0,0,0.18); padding: 0.3rem 0.7rem; border-radius: 6px;
+  min-width: 72px; text-align: center;
+}
+.timer.warn { background: var(--amber); }
+.timer.danger { background: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+.exam-body { display: flex; flex: 1; overflow: hidden; }
+
+/* Left: viewer */
+.viewer-panel {
+  flex: 0 0 60%; display: flex; flex-direction: column;
+  background: #111827; border-right: 2px solid #374151;
+}
+.viewer-bar {
+  background: #1f2937; padding: 0.5rem 1rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.viewer-bar span { font-size: 0.8rem; color: #9ca3af; }
+.viewer-bar .badge {
+  background: rgba(255,255,255,0.1); border-radius: 4px;
+  padding: 0.2rem 0.6rem; font-size: 0.75rem; color: #d1fae5;
+}
+.viewer-area {
+  flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.viewer-area img {
+  max-width: 100%; max-height: 100%; object-fit: contain;
+  border-radius: 4px; cursor: zoom-in;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.viewer-area iframe { width: 100%; height: 100%; border: none; border-radius: 4px; }
+.pdf-fallback { text-align: center; color: #9ca3af; padding: 2rem; }
+.pdf-fallback a { color: #6ee7b7; font-size: 1rem; text-decoration: none; display: inline-block; margin-top: 0.75rem; padding: 0.5rem 1.25rem; border: 1px solid #6ee7b7; border-radius: 6px; }
+.pdf-fallback a:hover { background: rgba(110,231,183,0.1); }
+
+/* Right: answer form */
+.answer-panel {
+  flex: 0 0 40%; display: flex; flex-direction: column;
+  background: white; overflow-y: auto;
+}
+.answer-panel-header {
+  background: var(--green-light); border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.25rem; flex-shrink: 0;
+}
+.answer-panel-header h2 { font-size: 0.9rem; color: var(--green); }
+.answer-form { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.875rem; }
+
+.fg label { display: block; font-size: 0.75rem; font-weight: bold; color: #374151; margin-bottom: 0.35rem; }
+.fg textarea {
+  width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border);
+  border-radius: 6px; font-size: 0.83rem; font-family: inherit; resize: vertical; min-height: 64px;
+  line-height: 1.5;
+}
+.fg textarea:focus { outline: none; border-color: var(--green); }
+.fg select {
+  width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border);
+  border-radius: 6px; font-size: 0.83rem; font-family: inherit; background: white;
+}
+.fg select:focus { outline: none; border-color: var(--green); }
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip {
+  padding: 0.3rem 0.75rem; border-radius: 20px;
+  background: #f3f4f6; border: 1.5px solid var(--border);
+  font-size: 0.78rem; color: #374151; cursor: pointer; user-select: none;
+  transition: all 0.15s;
+}
+.chip:hover { border-color: var(--green); }
+.chip.on { background: var(--green); color: white; border-color: var(--green); }
+
+/* Footer */
+.exam-footer {
+  background: white; border-top: 1px solid var(--border);
+  padding: 0.65rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.progress-info { font-size: 0.82rem; color: var(--gray); }
+.footer-btns { display: flex; gap: 0.5rem; }
+.btn { padding: 0.55rem 1.1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-family: inherit; font-weight: bold; }
+.btn-ghost { background: #f3f4f6; color: #374151; }
+.btn-ghost:hover { background: #e5e7eb; }
+.btn-primary { background: var(--green); color: white; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-danger { background: var(--red); color: white; }
+.btn-danger:hover { background: #b91c1c; }
+
+/* ── Submit Screen ────────────────────────────── */
+#submit-screen {
+  display: none; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem;
+}
+.submit-card {
+  background: white; border-radius: 14px; padding: 2.5rem;
+  max-width: 500px; width: 100%;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.10); text-align: center;
+}
+.submit-card .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+.submit-card h2 { color: var(--green); font-size: 1.3rem; margin-bottom: 0.5rem; }
+.submit-card .sub { color: var(--gray); font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6; }
+.summary-box {
+  background: var(--green-light); border-radius: 8px; padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem; text-align: left;
+}
+.summary-box table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.summary-box td { padding: 0.3rem 0.25rem; }
+.summary-box td:last-child { text-align: right; font-weight: bold; color: var(--green); }
+.btn-dl {
+  width: 100%; padding: 0.9rem; background: var(--green); color: white;
+  border: none; border-radius: 8px; font-size: 1rem; font-family: inherit;
+  font-weight: bold; cursor: pointer; margin-bottom: 0.75rem;
+}
+.btn-dl:hover { background: var(--green-dark); }
+.btn-back {
+  width: 100%; padding: 0.65rem; background: #f3f4f6; color: #374151;
+  border: none; border-radius: 8px; font-size: 0.875rem; font-family: inherit; cursor: pointer;
+}
+.btn-back:hover { background: #e5e7eb; }
+</style>
+</head>
+<body>
+
+<!-- ══ Start Screen ══════════════════════════════════════ -->
+<div id="start-screen">
+  <div class="start-card">
+    <div class="start-logo">
+      <div class="icon">🌲</div>
+      <h1>숲가꾸기 사업<br>품질·안전 오류탐지 경진대회</h1>
+      <p id="subtitle-org">산림청</p>
+    </div>
+    <div class="info-box">
+      <div>📷 사진 문제: <b id="cnt-photo">-</b>장</div>
+      <div>📄 문서 문제: <b id="cnt-doc">-</b>세트</div>
+      <div>⏱ 제한시간: <b id="cnt-min">-</b>분</div>
+      <div>💾 답안은 자동 저장 → 제출 시 CSV 다운로드</div>
+    </div>
+    <label class="field-label" for="name-input">이름</label>
+    <input type="text" id="name-input" placeholder="이름을 입력하세요" maxlength="20" autocomplete="off">
+    <button class="btn-start" id="start-btn" disabled onclick="startExam()">시험 시작하기</button>
+  </div>
+</div>
+
+<!-- ══ Exam Screen ══════════════════════════════════════ -->
+<div id="exam-screen">
+
+  <div class="exam-header">
+    <h1>숲가꾸기 오류탐지</h1>
+    <div class="q-nav" id="q-nav"></div>
+    <div class="header-right">
+      <span class="save-indicator" id="save-indicator">저장됨 ✓</span>
+      <div class="timer" id="timer">--:--</div>
+    </div>
+  </div>
+
+  <div class="exam-body">
+
+    <!-- Left: viewer -->
+    <div class="viewer-panel">
+      <div class="viewer-bar">
+        <span id="viewer-label">문제 1</span>
+        <span class="badge" id="viewer-badge">📷 사진</span>
+      </div>
+      <div class="viewer-area" id="viewer-area"></div>
+    </div>
+
+    <!-- Right: answer form -->
+    <div class="answer-panel">
+      <div class="answer-panel-header">
+        <h2 id="form-title">답안 작성</h2>
+      </div>
+      <div class="answer-form">
+
+        <div class="fg">
+          <label>문제 영역 (해당 항목 모두 선택)</label>
+          <div class="chip-group" id="chip-group">
+            <div class="chip" data-key="safety"   onclick="toggleChip(this)">안전</div>
+            <div class="chip" data-key="quality"  onclick="toggleChip(this)">품질</div>
+            <div class="chip" data-key="document" onclick="toggleChip(this)">문서·기록</div>
+            <div class="chip" data-key="env"      onclick="toggleChip(this)">환경</div>
+            <div class="chip" data-key="contract" onclick="toggleChip(this)">계약·감독</div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>발견한 문제점</label>
+          <textarea id="f-problem" rows="3" placeholder="사진·문서에서 발견한 구체적인 문제점을 서술하세요." oninput="autoSave()"></textarea>
+        </div>
+
+        <div class="fg">
+          <label>근거 및 이유</label>
+          <textarea id="f-basis" rows="3" placeholder="왜 문제인지, 어떤 기준·지침·설계와 불일치하는지 서술하세요." oninput="autoSave()"></textarea>
+        </div>
+
+        <div class="fg">
+          <label>품질·안전 영향</label>
+          <textarea id="f-impact" rows="2" placeholder="이 문제가 사업 품질이나 안전에 미치는 영향을 서술하세요." oninput="autoSave()"></textarea>
+        </div>
+
+        <div class="fg">
+          <label>조치 판단</label>
+          <select id="f-action" onchange="autoSave()">
+            <option value="">-- 조치를 선택하세요 --</option>
+            <option value="보완요구">보완요구</option>
+            <option value="착수보류">착수보류</option>
+            <option value="작업중지">작업중지</option>
+            <option value="감리재점검">감리 재점검 요구</option>
+            <option value="준공보류">준공보류</option>
+            <option value="설계변경검토">설계변경 검토</option>
+            <option value="현장확인후판단">현장확인 후 판단</option>
+          </select>
+        </div>
+
+        <div class="fg">
+          <label>추가로 받아야 할 자료</label>
+          <textarea id="f-docs" rows="2" placeholder="어떤 서류·사진·확인 자료를 추가로 요구할지 서술하세요." oninput="autoSave()"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- exam-body -->
+
+  <div class="exam-footer">
+    <div class="footer-btns">
+      <button class="btn btn-ghost" onclick="prevQ()">← 이전</button>
+    </div>
+    <div class="progress-info" id="progress-info">1 / 20문제</div>
+    <div class="footer-btns">
+      <button class="btn btn-ghost" onclick="nextQ()">다음 →</button>
+      <button class="btn btn-danger" onclick="confirmSubmit()">최종 제출</button>
+    </div>
+  </div>
+
+</div><!-- exam-screen -->
+
+<!-- ══ Submit Screen ══════════════════════════════════════ -->
+<div id="submit-screen">
+  <div class="submit-card">
+    <div class="big-icon">✅</div>
+    <h2>제출 완료</h2>
+    <p class="sub">수고하셨습니다.<br>아래 버튼으로 답안 파일을 다운로드한 후 담당자에게 제출하세요.</p>
+    <div class="summary-box">
+      <table>
+        <tr><td>응시자</td><td id="s-name">-</td></tr>
+        <tr><td>작성 문제</td><td id="s-answered">-</td></tr>
+        <tr><td>소요 시간</td><td id="s-time">-</td></tr>
+      </table>
+    </div>
+    <button class="btn-dl" onclick="downloadCSV()">📥 답안 CSV 다운로드</button>
+    <button class="btn-back" onclick="goBackToExam()">← 답안 다시 보기</button>
+  </div>
+</div>
+
+<script>
+// ─── State ────────────────────────────────────────────────
+let manifest = null;
+let curIdx = 0;
+let answers = {};
+let timerID = null;
+let secsLeft = 0;
+let startedAt = null;
+let submitted = false;
+let userName = '';
+
+const SAVE_KEY = 'fmexam_v1';
+const CAT_KEYS = ['safety', 'quality', 'document', 'env', 'contract'];
+
+// ─── Init ─────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const r = await fetch('manifest.json');
+    if (!r.ok) throw new Error('not found');
+    manifest = await r.json();
+  } catch (e) {
+    alert('manifest.json을 불러올 수 없습니다.\nGitHub Pages 또는 로컬 서버(python -m http.server)를 통해 실행하세요.');
+    return;
+  }
+
+  const photos = manifest.questions.filter(q => q.type === 'photo').length;
+  const docs   = manifest.questions.filter(q => q.type === 'doc').length;
+  document.getElementById('cnt-photo').textContent = photos;
+  document.getElementById('cnt-doc').textContent = docs;
+  document.getElementById('cnt-min').textContent = manifest.duration_minutes;
+
+  const ni = document.getElementById('name-input');
+  ni.addEventListener('input', () => {
+    document.getElementById('start-btn').disabled = ni.value.trim().length < 2;
+  });
+
+  // restore draft
+  try { const s = localStorage.getItem(SAVE_KEY); if (s) answers = JSON.parse(s); } catch(e) {}
+});
+
+// ─── Start ────────────────────────────────────────────────
+function startExam() {
+  userName = document.getElementById('name-input').value.trim();
+  if (!userName) return;
+
+  secsLeft = manifest.duration_minutes * 60;
+  startedAt = Date.now();
+
+  show('exam-screen', 'flex');
+  hide('start-screen');
+
+  buildNav();
+  gotoQ(0);
+  startTimer();
+}
+
+// ─── Navigation ───────────────────────────────────────────
+function buildNav() {
+  const nav = document.getElementById('q-nav');
+  nav.innerHTML = '';
+  manifest.questions.forEach((q, i) => {
+    const d = document.createElement('button');
+    d.className = 'q-dot';
+    d.id = `dot-${i}`;
+    d.textContent = i + 1;
+    d.title = q.label;
+    d.onclick = () => gotoQ(i);
+    nav.appendChild(d);
+  });
+  refreshDots();
+}
+
+function refreshDots() {
+  manifest.questions.forEach((_, i) => {
+    const d = document.getElementById(`dot-${i}`);
+    if (!d) return;
+    d.className = 'q-dot' + (i === curIdx ? ' current' : '') + (hasAnswer(i) ? ' answered' : '');
+  });
+}
+
+function hasAnswer(i) {
+  const a = answers[i];
+  return !!(a && (a.problem || a.action || (a.cats && a.cats.length)));
+}
+
+function gotoQ(i) {
+  saveAnswer();
+  curIdx = i;
+  renderQ(i);
+}
+function prevQ() { if (curIdx > 0) gotoQ(curIdx - 1); }
+function nextQ() { if (curIdx < manifest.questions.length - 1) gotoQ(curIdx + 1); }
+
+// ─── Render question ──────────────────────────────────────
+function renderQ(i) {
+  const q = manifest.questions[i];
+  const total = manifest.questions.length;
+
+  document.getElementById('viewer-label').textContent = `${q.label}  (${i+1}/${total})`;
+  document.getElementById('viewer-badge').textContent = q.type === 'photo' ? '📷 사진' : '📄 문서';
+  document.getElementById('form-title').textContent = `${q.label} — 답안`;
+  document.getElementById('progress-info').textContent = `${i+1} / ${total}문제`;
+
+  // viewer
+  const area = document.getElementById('viewer-area');
+  area.innerHTML = '';
+  if (q.type === 'photo') {
+    const img = document.createElement('img');
+    img.src = q.file;
+    img.alt = q.label;
+    img.title = '클릭하면 새 탭에서 확대됩니다';
+    img.onclick = () => window.open(q.file, '_blank');
+    area.appendChild(img);
+  } else {
+    // iframe for PDF (works in Chrome/Edge/Firefox on desktop)
+    const frame = document.createElement('iframe');
+    frame.src = q.file;
+    frame.onload = () => {};
+    frame.onerror = () => showPdfFallback(area, q.file);
+    area.appendChild(frame);
+
+    // fallback link shown below iframe
+    const fb = document.createElement('div');
+    fb.className = 'pdf-fallback';
+    fb.style.cssText = 'position:absolute;bottom:1rem;right:1rem;';
+    fb.innerHTML = `<a href="${q.file}" target="_blank">↗ 새 탭에서 열기</a>`;
+    area.style.position = 'relative';
+    area.appendChild(fb);
+  }
+
+  // restore form
+  const a = answers[i] || {};
+  CAT_KEYS.forEach(k => {
+    const chip = document.querySelector(`.chip[data-key="${k}"]`);
+    if (chip) chip.className = 'chip' + (a.cats && a.cats.includes(k) ? ' on' : '');
+  });
+  document.getElementById('f-problem').value = a.problem || '';
+  document.getElementById('f-basis').value   = a.basis   || '';
+  document.getElementById('f-impact').value  = a.impact  || '';
+  document.getElementById('f-action').value  = a.action  || '';
+  document.getElementById('f-docs').value    = a.docs    || '';
+
+  refreshDots();
+}
+
+function showPdfFallback(area, file) {
+  area.innerHTML = `
+    <div class="pdf-fallback">
+      <div style="font-size:2rem;margin-bottom:0.75rem;">📄</div>
+      <div>PDF를 인라인으로 표시할 수 없습니다.</div>
+      <a href="${file}" target="_blank">새 탭에서 열기 →</a>
+    </div>`;
+}
+
+// ─── Chips ────────────────────────────────────────────────
+function toggleChip(el) {
+  el.classList.toggle('on');
+  autoSave();
+}
+
+// ─── Save ─────────────────────────────────────────────────
+function currentFormData() {
+  return {
+    cats: CAT_KEYS.filter(k => document.querySelector(`.chip[data-key="${k}"]`)?.classList.contains('on')),
+    problem: document.getElementById('f-problem').value,
+    basis:   document.getElementById('f-basis').value,
+    impact:  document.getElementById('f-impact').value,
+    action:  document.getElementById('f-action').value,
+    docs:    document.getElementById('f-docs').value,
+    ts: new Date().toISOString(),
+  };
+}
+
+function saveAnswer() {
+  answers[curIdx] = currentFormData();
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(answers)); } catch(e) {}
+}
+
+function autoSave() {
+  saveAnswer();
+  const el = document.getElementById('save-indicator');
+  el.textContent = '저장됨 ✓';
+}
+
+// ─── Timer ────────────────────────────────────────────────
+function startTimer() {
+  updateTimerDisplay();
+  timerID = setInterval(() => {
+    secsLeft--;
+    updateTimerDisplay();
+    if (secsLeft <= 0) { clearInterval(timerID); alert('시간이 종료되었습니다. 자동 제출됩니다.'); doSubmit(); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(secsLeft / 60);
+  const s = secsLeft % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer' + (secsLeft <= 300 ? ' danger' : secsLeft <= 600 ? ' warn' : '');
+}
+
+// ─── Submit ───────────────────────────────────────────────
+function confirmSubmit() {
+  saveAnswer();
+  const done = manifest.questions.filter((_, i) => hasAnswer(i)).length;
+  const total = manifest.questions.length;
+  if (!confirm(`${total}문제 중 ${done}문제를 작성했습니다.\n최종 제출하시겠습니까?`)) return;
+  doSubmit();
+}
+
+function doSubmit() {
+  submitted = true;
+  clearInterval(timerID);
+  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+
+  const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+  const em = Math.floor(elapsed / 60);
+  const es = elapsed % 60;
+  const done = manifest.questions.filter((_, i) => hasAnswer(i)).length;
+
+  hide('exam-screen');
+  show('submit-screen', 'flex');
+  document.getElementById('s-name').textContent = userName;
+  document.getElementById('s-answered').textContent = `${done} / ${manifest.questions.length}문제`;
+  document.getElementById('s-time').textContent = `${em}분 ${es}초`;
+}
+
+function goBackToExam() {
+  hide('submit-screen');
+  show('exam-screen', 'flex');
+}
+
+// ─── CSV export ───────────────────────────────────────────
+function downloadCSV() {
+  const catLabel = { safety:'안전', quality:'품질', document:'문서·기록', env:'환경', contract:'계약·감독' };
+  const header = ['응시자','문제번호','문제명','유형','문제영역','발견한 문제점','근거 및 이유','품질·안전 영향','조치 판단','추가자료 요구','저장 시각'];
+  const rows = [header];
+
+  manifest.questions.forEach((q, i) => {
+    const a = answers[i] || {};
+    const cats = (a.cats || []).map(k => catLabel[k] || k).join('/');
+    rows.push([
+      userName,
+      `Q${String(i+1).padStart(2,'0')}`,
+      q.label,
+      q.type === 'photo' ? '사진' : '문서',
+      cats,
+      a.problem || '',
+      a.basis   || '',
+      a.impact  || '',
+      a.action  || '',
+      a.docs    || '',
+      a.ts      || '',
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `답안_${userName}_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─── Helpers ──────────────────────────────────────────────
+function show(id, display='block') { document.getElementById(id).style.display = display; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>
